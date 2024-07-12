@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"testing"
+	"testing/quick"
 )
 
 var (
@@ -62,3 +63,17 @@ func TestConvertingToArabic(t *testing.T) {
   }
 }
 
+func TestPropertiesOfConversion(t *testing.T) {
+  assertion := func(arabic int) bool {
+    if arabic < 0 || arabic > 3999 {
+      return true
+    }
+    roman := ConvertToRoman(arabic)
+    fromRoman := ConvertToArabic(roman)
+    return fromRoman == arabic
+  }
+
+  if err := quick.Check(assertion, nil); err != nil {
+    t.Error("failed checks", err)
+  }
+}
